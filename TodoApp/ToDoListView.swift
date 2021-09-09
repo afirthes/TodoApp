@@ -9,13 +9,23 @@ import UIKit
 
 protocol ToDoListDelegate: AnyObject {
     
-    func update(task: ToDoItem, index: Int)
+    func update()
     
 }
 
 class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate {
     
-    var todoItems: [ToDoItem] = [ToDoItem]()
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    
+    var todoItems: [ToDoItem] {
+        do {
+            return try context.fetch(ToDoItem.fetchRequest())
+        } catch let error as NSError {
+            print(error.localizedDescription)
+        }
+        
+        return []
+    }
 
     @IBOutlet weak var tableView: UITableView!
     
@@ -38,16 +48,6 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     @objc func addNewTask(_ notification: NSNotification) {
-        var todoItem: ToDoItem!
-        
-        if let task = notification.object as? ToDoItem {
-            todoItem = task
-        } else {
-            return
-        }
-        
-        todoItems.append(todoItem)
-        todoItems.sort{ $0.completionDate > $1.completionDate }
         tableView.reloadData()
     }
     
@@ -72,7 +72,12 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         
         // action to perform
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
-            self.todoItems.remove(at: indexPath.row)
+            
+            let toDoItem = self.todoItems[indexPath.row]
+            self.context.delete(toDoItem)
+            (UIApplication.shared.delegate as! AppDelegate).saveContext()
+            
+            //self.todoItems.remove(at: indexPath.row)
             self.tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
         }
         
@@ -89,7 +94,7 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItem")!
         
         cell.textLabel?.text = todo.name
-        cell.detailTextLabel?.text = todo.isComplete ? "Complete" : "Incomplete"
+        cell.detailTextLabel?.text = todo.isCompleted ? "Complete" : "Incomplete"
         
         
         return cell
@@ -126,8 +131,8 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
 }
 
 extension ToDoListView: ToDoListDelegate {
-    func update(task: ToDoItem, index: Int) {
-        todoItems[index] = task
+    func update() {
+    
         tableView.reloadData()
     }
 }

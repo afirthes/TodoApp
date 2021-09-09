@@ -6,6 +6,8 @@
 //
 
 import UIKit
+import CoreData
+
 
 class AddTaskViewController: UIViewController {
     
@@ -142,10 +144,19 @@ class AddTaskViewController: UIViewController {
             return
         }
         
-        let toDoItem = ToDoItem(name: taskName, details: taskDetails, completionDate: completionDate)
-        let toDoDict: [String: ToDoItem] = ["Task": toDoItem]
+        let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+        
+        let toDoItem = ToDoItem(context: context)
           
-        NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: toDoItem)
+        toDoItem.name = taskName
+        toDoItem.details = taskDetails
+        toDoItem.completionDate = completionDate
+        toDoItem.isCompleted = false
+        toDoItem.startDate = Date()
+        
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        
+        NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: nil)
         
         //NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: nil, userInfo: toDoDict)
         

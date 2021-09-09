@@ -29,13 +29,13 @@ class ToDoDetailsViewController: UIViewController {
         
         taskTitleLabel.text = todo.name
         taskDetailsTextView.text = todo.details
-        if todo.isComplete {
+        if todo.isCompleted {
             disableCompleteButton()
         }
         
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.yyyy hh:mm"
-        let taskDateStr = formatter.string(from: todo.completionDate)
+        let taskDateStr = formatter.string(from: todo.completionDate!)
         taskCompletionDate.text = taskDateStr
     }
     
@@ -47,11 +47,13 @@ class ToDoDetailsViewController: UIViewController {
     
     @IBAction func taskDidComplete(_ sender: Any) {
         
-        todo.isComplete = true
-        disableCompleteButton()
-        delegate?.update(task: todo, index: todoIndex)
+        todo.isCompleted = true
         
-        //self.navigationController
+        (UIApplication.shared.delegate as! AppDelegate).saveContext()
+        
+        disableCompleteButton()
+        delegate?.update()
+
     }
     
 

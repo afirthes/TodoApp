@@ -7,6 +7,7 @@
 
 import Foundation
 
+/*
 struct ToDoItem {
     
     var name: String
@@ -27,3 +28,4 @@ struct ToDoItem {
         self.startDate = Date() // now
     }
 }
+ */
