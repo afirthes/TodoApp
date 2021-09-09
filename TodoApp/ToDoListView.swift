@@ -37,8 +37,25 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         testItem.isComplete = true
         todoItems.append(testItem)
         
-        
+        NotificationCenter.default.addObserver(self,
+                                               selector: #selector(addNewTask(_ :)),
+                                               name: NSNotification.Name.init("ru.windwail.addtask"),
+                                               object: nil)
 
+    }
+    
+    @objc func addNewTask(_ notification: NSNotification) {
+        var todoItem: ToDoItem!
+        
+        if let task = notification.object as? ToDoItem {
+            todoItem = task
+        } else {
+            return
+        }
+        
+        todoItems.append(todoItem)
+        todoItems.sort{ $0.completionDate > $1.completionDate }
+        tableView.reloadData()
     }
     
     
@@ -51,7 +68,7 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         self.tableView.setEditing(!tableView.isEditing, animated: true)
         
         if tableView.isEditing == true {
-            navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(editTapped))
+                navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(editTapped))
         } else {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self , action: #selector(editTapped))
         }
@@ -106,6 +123,10 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
             detailsView.delegate = self
         }
         
+    }
+    
+    deinit {
+        NotificationCenter.default.removeObserver(self, name: NSNotification.Name.init("ru.windwail.addtask"), object: nil)
     }
 
 

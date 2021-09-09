@@ -55,6 +55,8 @@ class AddTaskViewController: UIViewController {
         taskDetailsTextView.inputAccessoryView = toolBarDone
         taskNameTextField.delegate = self
         taskDetailsTextView.delegate = self
+        
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -142,10 +144,10 @@ class AddTaskViewController: UIViewController {
         
         let toDoItem = ToDoItem(name: taskName, details: taskDetails, completionDate: completionDate)
         let toDoDict: [String: ToDoItem] = ["Task": toDoItem]
+          
+        NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: toDoItem)
         
-        //NotificationCenter.default.post(name: NSNotification.Name.init("com.todolistapp.addtask"), object: toDoItem)
-        
-        NotificationCenter.default.post(name: NSNotification.Name.init("com.todolistapp.addtask"), object: nil, userInfo: toDoDict)
+        //NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: nil, userInfo: toDoDict)
         
         dismiss(animated: true, completion: nil)
     }
