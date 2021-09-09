@@ -30,13 +30,6 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         
         self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self , action: #selector(editTapped))
         
-        var testItem = ToDoItem(name: "Test item 1", details: "Test details 1", completionDate: Date())
-        todoItems.append(testItem)
-        
-        testItem = ToDoItem(name: "Test item 2", details: "Test details 2", completionDate: Date())
-        testItem.isComplete = true
-        todoItems.append(testItem)
-        
         NotificationCenter.default.addObserver(self,
                                                selector: #selector(addNewTask(_ :)),
                                                name: NSNotification.Name.init("ru.windwail.addtask"),
