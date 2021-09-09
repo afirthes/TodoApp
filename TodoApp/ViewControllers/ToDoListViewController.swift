@@ -6,18 +6,24 @@
 //
 
 import UIKit
+import RealmSwift
 
 protocol ToDoListDelegate: AnyObject {
-    
-    func update(task: ToDoItem, index: Int)
-    
+    func update()
 }
 
-class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate {
-    
-    var todoItems: [ToDoItem] = [ToDoItem]()
+class ToDoListViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
 
     @IBOutlet weak var tableView: UITableView!
+    
+    // no cachig
+    var toDoItems: Results<Task>? {
+        guard let realm = LocalDatabaseManager.realm else {
+            return nil
+        }
+        
+        return realm.objects(Task.self) // all objects
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,16 +44,7 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     @objc func addNewTask(_ notification: NSNotification) {
-        var todoItem: ToDoItem!
-        
-        if let task = notification.object as? ToDoItem {
-            todoItem = task
-        } else {
-            return
-        }
-        
-        todoItems.append(todoItem)
-        todoItems.sort{ $0.completionDate > $1.completionDate }
+        // everything is in database
         tableView.reloadData()
     }
     
@@ -72,7 +69,19 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         
         // action to perform
         let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
-            self.todoItems.remove(at: indexPath.row)
+            
+            guard let realm = LocalDatabaseManager.realm else { return }
+            guard let item = self.toDoItems?[indexPath.row] else { return }
+            
+            do {
+                try realm.write({
+                    realm.delete(item)
+                })
+            } catch let error as NSError {
+                print(error)
+                return
+            }
+            
             self.tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
         }
         
@@ -85,22 +94,22 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let todo = todoItems[indexPath.row]
+        let todo = toDoItems![indexPath.row]
         let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItem")!
         
         cell.textLabel?.text = todo.name
         cell.detailTextLabel?.text = todo.isComplete ? "Complete" : "Incomplete"
         
-        
         return cell
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        todoItems.count
+        toDoItems?.count ?? 0
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let todoSelected = todoItems[indexPath.row]
+        
+        let todoSelected = toDoItems![indexPath.row] // force, ith should exist
         performSegue(withIdentifier: "TaskDetailsSegue", sender: (todoSelected, indexPath.row))
     }
     
@@ -110,7 +119,7 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         
             guard let detailsView = segue.destination as? ToDoDetailsViewController else { return }
             
-            guard let sender = sender as? (ToDoItem, Int) else { return }
+            guard let sender = sender as? (Task, Int) else { return }
             
             (detailsView.todo, detailsView.todoIndex) = sender
             detailsView.delegate = self
@@ -125,9 +134,8 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
 
 }
 
-extension ToDoListView: ToDoListDelegate {
-    func update(task: ToDoItem, index: Int) {
-        todoItems[index] = task
+extension ToDoListViewController: ToDoListDelegate {
+    func update() {
         tableView.reloadData()
     }
 }

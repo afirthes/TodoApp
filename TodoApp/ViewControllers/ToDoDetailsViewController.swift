@@ -10,7 +10,7 @@ import UIKit
 
 class ToDoDetailsViewController: UIViewController {
     
-    var todo: ToDoItem!
+    var todo: Task!
     
     var todoIndex: Int!
     
@@ -35,7 +35,7 @@ class ToDoDetailsViewController: UIViewController {
         
         let formatter = DateFormatter()
         formatter.dateFormat = "dd.MM.yyyy hh:mm"
-        let taskDateStr = formatter.string(from: todo.completionDate)
+        let taskDateStr = formatter.string(from: todo.completionDate as Date)
         taskCompletionDate.text = taskDateStr
     }
     
@@ -47,11 +47,20 @@ class ToDoDetailsViewController: UIViewController {
     
     @IBAction func taskDidComplete(_ sender: Any) {
         
-        todo.isComplete = true
-        disableCompleteButton()
-        delegate?.update(task: todo, index: todoIndex)
+        guard let realm = LocalDatabaseManager.realm else { return }
         
-        //self.navigationController
+        do {
+            try realm.write({
+                self.todo.isComplete = true
+                
+            })
+        } catch let error as NSError {
+            print(error.localizedDescription)
+            return
+        }
+        
+        disableCompleteButton()
+        delegate?.update()
     }
     
 

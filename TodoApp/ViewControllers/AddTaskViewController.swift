@@ -142,12 +142,31 @@ class AddTaskViewController: UIViewController {
             return
         }
         
-        let toDoItem = ToDoItem(name: taskName, details: taskDetails, completionDate: completionDate)
-        let toDoDict: [String: ToDoItem] = ["Task": toDoItem]
-          
-        NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: toDoItem)
+        guard let realm = LocalDatabaseManager.realm else {
+            reportError(title: "Error", message: "New task could not be created.")
+            return
+        }
         
-        //NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: nil, userInfo: toDoDict)
+        let nextTaskId = (realm.objects(Task.self).max(ofProperty: "id") as Int? ?? 0) + 1
+        
+        let task = Task()
+        task.id = nextTaskId
+        task.name = taskName
+        task.details = taskDetails
+        task.completionDate = completionDate as NSDate
+        task.isComplete = false
+        
+        do {
+            try realm.write{
+                realm.add(task)
+            }
+        } catch let error as NSError {
+            print(error)
+            reportError(title: "Error", message: "New task could not be created.")
+            return
+        }
+          
+        NotificationCenter.default.post(name: NSNotification.Name.init("ru.windwail.addtask"), object: nil)
         
         dismiss(animated: true, completion: nil)
     }
