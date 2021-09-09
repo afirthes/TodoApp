@@ -87,18 +87,18 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textField opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="EQy-zl-PPB">
-                                                <rect key="frame" x="20" y="64.5" width="374" height="64.5"/>
+                                                <rect key="frame" x="20" y="64.5" width="374" height="34"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <textInputTraits key="textInputTraits"/>
                                             </textField>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Task Details" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pMd-5h-qvI">
-                                                <rect key="frame" x="20" y="159" width="87" height="19.5"/>
+                                                <rect key="frame" x="20" y="128.5" width="87" height="19.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="ZXR-P0-rfq">
-                                                <rect key="frame" x="20" y="193.5" width="374" height="100"/>
+                                                <rect key="frame" x="20" y="163" width="374" height="100"/>
                                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="100" id="ZxP-AF-zAh"/>
@@ -107,13 +107,13 @@
                                                 <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                             </textView>
                                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Task Completion Date" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="72c-nD-dKK">
-                                                <rect key="frame" x="20" y="323.5" width="159" height="19.5"/>
+                                                <rect key="frame" x="20" y="293" width="159" height="19.5"/>
                                                 <fontDescription key="fontDescription" type="system" pointSize="16"/>
                                                 <nil key="textColor"/>
                                                 <nil key="highlightedColor"/>
                                             </label>
-                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" translatesAutoresizingMaskIntoConstraints="NO" id="qP8-Px-ONB">
-                                                <rect key="frame" x="20" y="363" width="374" height="100"/>
+                                            <datePicker contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" datePickerMode="dateAndTime" minuteInterval="1" style="wheels" translatesAutoresizingMaskIntoConstraints="NO" id="qP8-Px-ONB">
+                                                <rect key="frame" x="20" y="332.5" width="374" height="100"/>
                                                 <constraints>
                                                     <constraint firstAttribute="height" constant="100" id="RkO-NR-unT"/>
                                                 </constraints>
@@ -155,7 +155,6 @@
                                             <constraint firstItem="x5O-jo-V2T" firstAttribute="top" secondItem="ktb-GU-RmF" secondAttribute="top" constant="30" id="odb-he-drn"/>
                                             <constraint firstAttribute="bottom" secondItem="Xc2-Cx-lNF" secondAttribute="bottom" constant="50" id="pq2-cj-zcj"/>
                                             <constraint firstItem="qP8-Px-ONB" firstAttribute="leading" secondItem="ktb-GU-RmF" secondAttribute="leading" constant="20" id="r9B-nb-tKl"/>
-                                            <constraint firstItem="Xc2-Cx-lNF" firstAttribute="top" secondItem="qP8-Px-ONB" secondAttribute="bottom" constant="40" id="zWe-yF-DgG"/>
                                             <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="x5O-jo-V2T" secondAttribute="trailing" constant="10" id="zpi-ZK-T4R"/>
                                         </constraints>
                                     </view>

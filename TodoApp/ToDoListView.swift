@@ -38,9 +38,12 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         todoItems.append(testItem)
         
         
+
     }
     
+    
     @objc func addTapped() {
+        tableView.setEditing(false, animated: false)
         performSegue(withIdentifier: "AddTaskSegue", sender: nil)
     }
     
@@ -52,6 +55,18 @@ class ToDoListView: UIViewController, UITableViewDataSource, UITableViewDelegate
         } else {
             self.navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .edit, target: self , action: #selector(editTapped))
         }
+    }
+    
+    // TODO: UITableViewRowAction' was deprecated in iOS 13.0: Use UIContextualAction and related APIs instead.
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        // action to perform
+        let delete = UITableViewRowAction(style: .destructive, title: "Delete") { action, indexPath in
+            self.todoItems.remove(at: indexPath.row)
+            self.tableView.deleteRows(at: [indexPath], with: UITableView.RowAnimation.automatic)
+        }
+        
+        return [delete]
     }
     
     
